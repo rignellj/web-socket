@@ -60,6 +60,7 @@
     <ul id="messages"></ul>
     <form id="form" action="">
       <input id="input" autocomplete="off" /><button>Send</button>
+      <button id="toggle-btn">Disconnect</button>
     </form>
     <script src="/socket.io/socket.io.js"></script>
     <script>
@@ -68,6 +69,19 @@
       const messages = document.getElementById('messages')
       const form = document.getElementById('form')
       const input = document.getElementById('input')
+      const toggleButton = document.getElementById('toggle-btn')
+
+      toggleButton.addEventListener('click', (e) => {
+        console.log(socket)
+        e.preventDefault()
+        if (socket.connected) {
+          toggleButton.innerText = 'Connect'
+          socket.disconnect()
+        } else {
+          toggleButton.innerText = 'Disconnect'
+          socket.connect()
+        }
+      })
 
       form.addEventListener('submit', (e) => {
         e.preventDefault()
@@ -76,6 +90,17 @@
           input.value = ''
         }
       })
+
+      socket.on('connect', () => {
+        if (socket.recovered) {
+          console.log(
+            'any event missed during the disconnection period will be received now'
+          )
+        } else {
+          console.log('new or unrecoverable session')
+        }
+      })
+
       socket.on('chat message', (msg) => {
         const item = document.createElement('li')
         item.textContent = msg
