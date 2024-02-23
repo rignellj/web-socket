@@ -3,14 +3,23 @@ import 'dotenv/config'
 import express from 'express'
 import { createServer } from 'node:http'
 import { join } from 'node:path'
+import { Server, Socket } from 'socket.io'
 
 const PORT = process.env.PORT || 3001
 
 const app = express()
 const server = createServer(app)
+const io = new Server(server)
 
-app.get('/', (req, res) => {
+app.get('/', (_, res) => {
   res.sendFile(join(__dirname, 'public/index.html'))
+})
+
+io.on('connection', (socket: Socket) => {
+  console.log('a user connected')
+  socket.on('disconnect', () => {
+    console.log('user disconnected')
+  })
 })
 
 server.listen(PORT, () => {
