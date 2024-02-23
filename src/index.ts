@@ -9,7 +9,9 @@ const PORT = process.env.PORT || 3001
 
 const app = express()
 const server = createServer(app)
-const io = new Server(server)
+const io = new Server(server, {
+  connectionStateRecovery: {},
+})
 
 app.get('/', (_, res) => {
   res.sendFile(join(__dirname, 'public/index.html'))
