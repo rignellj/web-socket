@@ -17,7 +17,7 @@ app.get('/', (_, res) => {
 
 io.on('connection', (socket: Socket) => {
   socket.on('chat message', (msg) => {
-    console.log('message: ' + msg)
+    io.emit('chat message', msg)
   })
 
   socket.on('disconnect', () => {
